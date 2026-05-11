@@ -10,18 +10,14 @@ Raithu Mitra AI helps farmers detect plant diseases using AI image classificatio
 
 ## Frontend
 
-Add your deployed Vercel URL here.
-
 ```text
-https://your-vercel-app.vercel.app
+https://vercel.com/hafizurrahaman31s-projects/raithu-mitra-ai
 ```
 
 ## Backend API
 
-Add your deployed Render URL here.
-
 ```text
-https://your-render-backend.onrender.com
+https://raithu-mitra-ai-backend-service.onrender.com
 ```
 
 ---
