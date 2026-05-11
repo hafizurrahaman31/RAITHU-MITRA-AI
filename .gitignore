@@ -1,8 +1,14 @@
 # Python
 backend/venv/
-backend/__pycache__/
+backend/**/__pycache__/
 backend/dataset/
 *.pyc
+
+# ML/data artifacts
+*.keras
+*.pkl
+*.npy
+*.npz
 
 # Node
 frontend/node_modules/

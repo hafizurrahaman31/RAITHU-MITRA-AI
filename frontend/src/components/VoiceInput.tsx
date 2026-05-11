@@ -2,13 +2,43 @@
 
 import { useState } from "react";
 
+type SpeechRecognitionResultEvent = Event & {
+  results: {
+    [index: number]: {
+      [index: number]: {
+        transcript: string;
+      };
+    };
+  };
+};
+
+type SpeechRecognitionErrorEvent = Event & {
+  error: string;
+};
+
+type SpeechRecognitionInstance = {
+  lang: string;
+  start: () => void;
+  onresult: ((event: SpeechRecognitionResultEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+
+type SpeechRecognitionWindow = Window & {
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  SpeechRecognition?: SpeechRecognitionConstructor;
+};
+
 export default function VoiceInput() {
   const [transcript, setTranscript] = useState("");
   const [isListening, setIsListening] = useState(false);
 
   const startListening = () => {
     console.log("Start button clicked");
-    const SpeechRecognition = (window as any).webkitSpeechRecognition;
+    const browserWindow = window as SpeechRecognitionWindow;
+    const SpeechRecognition =
+      browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
       alert("Speech recognition not supported");
@@ -25,14 +55,14 @@ export default function VoiceInput() {
 
     setIsListening(true);
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event) => {
       console.log(event);
       const text = event.results[0][0].transcript;
 
       setTranscript(text);
       setIsListening(false);
     };
-    recognition.onerror = (event: any) => {
+    recognition.onerror = (event) => {
       console.log("Speech recognition error:", event.error);
 
       setIsListening(false);

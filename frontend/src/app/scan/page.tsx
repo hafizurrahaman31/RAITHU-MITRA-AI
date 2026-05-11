@@ -1,9 +1,21 @@
 "use client";
+import Image from "next/image";
 import { useState } from "react";
+
+type ScanResult = {
+  prediction: string;
+  confidence: number;
+  pesticide: string;
+  tips: string[];
+};
+
+type ScanHistoryItem = Omit<ScanResult, "tips"> & {
+  date: string;
+};
 
 export default function ScanPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<ScanResult | null>(null);
   const [loading, setLoading] = useState(false);
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -54,13 +66,14 @@ export default function ScanPage() {
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
+      const data = (await response.json()) as ScanResult;
       setResult(data);
-      const existingHistory = JSON.parse(
-        localStorage.getItem("scanHistory") || "[]",
-      );
+      const savedHistory = JSON.parse(localStorage.getItem("scanHistory") || "[]");
+      const existingHistory: ScanHistoryItem[] = Array.isArray(savedHistory)
+        ? savedHistory
+        : [];
 
-      const newEntry = {
+      const newEntry: ScanHistoryItem = {
         prediction: data.prediction,
         confidence: data.confidence,
         pesticide: data.pesticide,
@@ -90,6 +103,7 @@ export default function ScanPage() {
       border-dashed
       border-green-300
       rounded-3xl
+      relative
       h-72
       flex
       items-center
@@ -103,9 +117,12 @@ export default function ScanPage() {
     "
         >
           {selectedImage ? (
-            <img
+            <Image
               src={selectedImage}
               alt="Selected Plant"
+              fill
+              sizes="384px"
+              unoptimized
               className="w-full h-full object-cover"
             />
           ) : (

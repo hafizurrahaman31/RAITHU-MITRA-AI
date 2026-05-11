@@ -2,8 +2,18 @@
 
 import { useEffect, useState } from "react";
 
+type WeatherResponse = {
+  main?: {
+    temp: number;
+    humidity: number;
+  };
+  weather?: {
+    main: string;
+  }[];
+};
+
 export default function WeatherCard() {
-  const [weather, setWeather] = useState<any>(null);
+  const [weather, setWeather] = useState<WeatherResponse | null>(null);
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -12,7 +22,7 @@ export default function WeatherCard() {
           `https://api.openweathermap.org/data/2.5/weather?q=Hyderabad&appid=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}&units=metric`,
         );
 
-        const data = await response.json();
+        const data = (await response.json()) as WeatherResponse;
         console.log(data);
 
         setWeather(data);
@@ -24,7 +34,7 @@ export default function WeatherCard() {
     fetchWeather();
   }, []);
 
-  if (!weather || !weather.main) {
+  if (!weather?.main || !weather.weather?.[0]) {
     return (
       <div
         className="

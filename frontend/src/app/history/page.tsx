@@ -1,24 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+type ScanHistoryItem = {
+  prediction: string;
+  confidence: number;
+  pesticide: string;
+  date: string;
+};
+
+const loadScanHistory = (): ScanHistoryItem[] => {
+  try {
+    const savedHistory = JSON.parse(localStorage.getItem("scanHistory") || "[]");
+
+    return Array.isArray(savedHistory) ? savedHistory : [];
+  } catch {
+    return [];
+  }
+};
 
 export default function HistoryPage() {
 
-  const [history, setHistory] =
-    useState < any[] > ([]);
-
-  useEffect(() => {
-
-    const savedHistory =
-      JSON.parse(
-        localStorage.getItem(
-          "scanHistory"
-        ) || "[]"
-      );
-
-    setHistory(savedHistory);
-
-  }, []);
+  const [history] =
+    useState<ScanHistoryItem[]>(loadScanHistory);
 
   return (
 

@@ -8,9 +8,14 @@ import WeatherCard from "@/components/WeatherCard";
 import { translations } from "@/lib/translations";
 import VoiceInput from "@/components/VoiceInput";
 
+type LocationCoordinates = {
+  latitude: number;
+  longitude: number;
+};
+
 export default function Home() {
   const [language, setLanguage] = useState("en");
-  const [location, setLocation] = useState<any>(null);
+  const [location, setLocation] = useState<LocationCoordinates | null>(null);
   const [locationError, setLocationError] = useState("");
   const t = translations[language as keyof typeof translations];
   const features = [
